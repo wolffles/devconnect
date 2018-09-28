@@ -8,6 +8,10 @@ const profile = require("./routes/api/profile");
 
 const app = express();
 
+//bodyparser middleware
+//express now has a json parser in it.
+app.use(express.json());
+
 //DB config
 const db = require('./config/keys').mongouURI
 
