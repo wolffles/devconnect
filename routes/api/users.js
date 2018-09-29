@@ -4,6 +4,12 @@ const gravatar = require('gravatar');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const keys = require('../../config/keys')
+const passport = require('passport')
+
+//Load Input Validation
+const validateRegisterInput = require('../../validation/register');
+const validateLoginInput = require("../../validation/login");
+
 //load User model
 const User = require('../../models/User');
 
@@ -17,6 +23,13 @@ router.get('/test', (request, response) => response.json({msg: "Users Works"})
 //@desc     Register user
 //@access   public
 router.post('/register', (req, res) => {
+    const { errors, isValid } = validateRegisterInput(req.body);
+
+    // Check Validation if isValid is false isValid checks if its empty so if not empty
+    if(!isValid){
+        return res.status(400).json(errors); //status code 400 is bad request.
+    }
+
     User.findOne({email: req.body.email})
         .then(user => {
             if(user) {
@@ -34,7 +47,7 @@ router.post('/register', (req, res) => {
                      const newUser = new User({
                        name: req.body.name,
                        email: req.body.email,
-                       avatar,
+                       avatar, // avatar: avatar
                        password: req.body.password
                      });
 
@@ -61,6 +74,13 @@ router.post('/register', (req, res) => {
 //@desc     Login user/ returning JWT Token
 //@access   public
 router.post('/login', (req, res) => {
+    const { errors, isValid } = validateLoginInput(req.body);
+
+    // Check Validation if isValid is false isValid checks if its empty so if not empty
+    if (!isValid) {
+        return res.status(400).json(errors); //status code 400 is bad request.
+    }
+
     const email = req.body.email;
     const password = req.body.password;
 
@@ -68,6 +88,7 @@ router.post('/login', (req, res) => {
     User.findOne({email: email}).then(user => {
         //check for user
         if(!user){
+            errors.email = 'User not found'
             return res.status(404).json({email: "User not found"}); //404 means resource not found. )
         }
 
@@ -86,8 +107,8 @@ router.post('/login', (req, res) => {
                     // Signed Token
                     jwt.sign(
                         payload,
-                        keys.secret,
-                        { expiresIn: 3600},//units in seconds 
+                        keys.secretOrKey,
+                        { expiresIn: 3600 },
                         (err, token) => {
                             res.json({
                                 success: true,
@@ -96,11 +117,27 @@ router.post('/login', (req, res) => {
                         }
                         );
                 } else {
+                    errors.password = 'Password incorrect';
                     return res.status(400)
-                    .json({password: 'Password incorrect'});
+                    .json(errors);
                 }
             });
 
     });
 });
+
+//@route    GET api/users/current
+//@desc     Returns current user
+//@access   Private
+router.get('/current', 
+    passport.authenticate('jwt',
+    {session: false}),
+    (req,res) => {
+        res.json({
+            id: req.user.id,
+            name: req.user.name,
+            email: req.user.email
+        })
+})
+
 module.exports = router;
