@@ -12,6 +12,7 @@ const app = express();
 //bodyparser middleware
 //express now has a json parser in it.
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 //DB config
 const db = require('./config/keys').mongouURI

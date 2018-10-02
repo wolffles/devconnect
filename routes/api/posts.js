@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-const passport = require('passport')
+const passport = require('passport');
 
 //post model
 const Post = require('../../models/Post')
@@ -22,7 +22,7 @@ router.get('/', (req, res) => {
 });
 
 //@route    GET api/posts
-//@desc     gets all posts
+//@desc     gets a posts
 //@access   public 
 router.get('/:id', (req, res) => {
     Post.findById(req.params.id)
@@ -159,7 +159,6 @@ router.post('/comment/:post_id', passport.authenticate('jwt', {session: false}),
 router.delete('/comment/:post_id/:comment_id', passport.authenticate('jwt', { session: false }), (req, res) => {
     Post.findById(req.params.post_id)
         .then(post => {
-            console.log(post)
             //Check to see if comment exists
             if (post.comments.filter(comment => comment._id.toString() === req.params.comment_id).length === 0) {
                 return res.status(404).json({commentnotexists: 'Comment does not exist'});
