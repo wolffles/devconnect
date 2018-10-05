@@ -20,16 +20,17 @@ router.get('/all', (req, res) => {
     const errors = {};
 
     Profile.find()
-    .populate('user', ['name', 'avatar'])
+        .populate('user', ['name', 'avatar'])
         .then(profiles => {
             if (!profiles) {
-                errors.profiles = 'There are no profiles'
+                errors.noprofile = 'There are no profiles';
                 return res.status(404).json(errors);
-        }
+            }
 
-        res.json(profiles);
-    }).catch(err => res.status(404).json({ profile: "There are no profiles"}))
-})
+            res.json(profiles);
+        })
+        .catch(err => res.status(404).json({ profile: 'There are no profiles' }));
+});
 
 //@route    GET api/profile/
 //@desc     gets current user's profile
@@ -171,7 +172,7 @@ router.post('/experience', passport.authenticate('jwt', { session: false }), (re
             from: req.body.from,
             to: req.body.to,
             current: req.body.current,
-            descrption: req.body.descrption
+            description: req.body.description
         }
 
         //Add to exp array
@@ -202,7 +203,7 @@ router.post('/education', passport.authenticate('jwt', { session: false }), (req
                 from: req.body.from,
                 to: req.body.to,
                 current: req.body.current,
-                descrption: req.body.descrption
+                description: req.body.description
             }
 
             //Add to exp array
