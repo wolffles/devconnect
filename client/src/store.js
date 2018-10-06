@@ -6,13 +6,16 @@ const initialState = {};
 
 const middleware = [thunk];
 
-const store = createStore(
-    rootReducer,
-    initialState,
-    compose(
-        applyMiddleware(...middleware),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-    )
-);
+// const store = createStore(
+//     rootReducer,
+//     initialState,
+//     compose(
+//         applyMiddleware(...middleware),
+//         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+//     )
+// );
 
+//commented out because it doesnt work on safari? but new replacement does.
+const composeEnhancers = window._REDUX_DEVTOOLS_EXTENSION_COMPOSE_ || compose;
+const store = createStore(rootReducer, initialState, composeEnhancers(applyMiddleware(...middleware))); 
 export default store;
