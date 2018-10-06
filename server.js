@@ -39,7 +39,7 @@ if(process.env.NODE_ENV === 'production') {
     // Set static folder to client/build
     app.use(express.static('client/build'));
     // any route gets hit here load the react html file in build
-    app.get('*', (req,res) => {
+    app.get('*', (req, res) => {
         res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
     });
 
