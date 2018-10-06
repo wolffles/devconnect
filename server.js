@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const passport = require('passport');
+const path = require('path') // part of nodejs
 
 const users = require("./routes/api/users");
 const posts = require("./routes/api/posts");
@@ -32,7 +33,17 @@ require('./config/passport')(passport);
 app.use('/api/users', users);
 app.use('/api/posts', posts);
 app.use('/api/profile', profile);
+// if none of these api routes are being hit, look for index
+// Server static assets if in production
+if(proccess.env.NODE_ENV === 'production') {
+    // Set static folder to client/build
+    app.use(express.static('client/build'));
+    // any route gets hit here load the react html file in build
+    app.get('*', (req,res) => {
+        res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+    });
 
+}
 
 const port = process.env.PORT || 5000;
 
