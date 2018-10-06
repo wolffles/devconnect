@@ -35,7 +35,7 @@ app.use('/api/posts', posts);
 app.use('/api/profile', profile);
 // if none of these api routes are being hit, look for index
 // Server static assets if in production
-if(proccess.env.NODE_ENV === 'production') {
+if(process.env.NODE_ENV === 'production') {
     // Set static folder to client/build
     app.use(express.static('client/build'));
     // any route gets hit here load the react html file in build
