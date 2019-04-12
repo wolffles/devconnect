@@ -32,7 +32,7 @@ router.get('/:id', (req, res) => {
 
 //@route    POST api/posts
 //@desc     Creates a post
-//@access   public
+//@access   private
 router.post('/', passport.authenticate('jwt', { session:false}), (req, res) => {
     const {errors, isValid } = validatePostInput(req.body);
 
