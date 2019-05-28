@@ -14,7 +14,11 @@ class Dashboard extends Component {
   }
 
   onDeleteClick(e) {
+    if (this.props.auth.user.id === "5ccb6f4adff82f4127fa2a87"){
+      alert("Sorry deleting the demo account is not allowed")
+    }else{
     this.props.deleteAccount();
+    }
   }
 
   render() {
